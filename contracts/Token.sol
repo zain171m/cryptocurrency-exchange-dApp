@@ -15,7 +15,11 @@ contract Token {
     //Send Tokens
 
 
-    constructor(string memory _name, string memory _symbol, uint256 _totalSupply) {
+    constructor(
+        string memory _name, 
+        string memory _symbol, 
+        uint256 _totalSupply
+        ) {
         name = _name;
         symbol = _symbol;
         totalSupply = _totalSupply * (10**decimals);
@@ -24,6 +28,17 @@ contract Token {
         holds address of caller of constructor function
          in this case */
     } 
+
+    function transfer(address _to, uint256 _value)
+     public 
+     returns (bool success)
+     {
+        // Deduct tokens from spender
+        balanceOf[msg.sender] = balanceOf[msg.sender] - _value;
+        // Credit token to reciever
+        balanceOf[_to] = balanceOf[_to ] + _value;
+        return true;
+    }
 }
 
 

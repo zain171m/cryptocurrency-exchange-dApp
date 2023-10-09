@@ -7,7 +7,7 @@ const tokens = (n) => {
 
 describe('Token', () => {
     //We gonna write test inside this function
-    let token,accounts, deployer
+    let token,accounts, deployer, receiver
     beforeEach(async()=>{
         //Fetch Token from Blockchain
         const Token = await ethers.getContractFactory('Token')
@@ -15,6 +15,7 @@ describe('Token', () => {
 
         accounts = await ethers.getSigners()
         deployer = accounts[0]
+        receiver = accounts[1]
     })
 
     describe('Deployment Phase', () => {
@@ -46,9 +47,23 @@ describe('Token', () => {
         })
         it('assign total supply to deployer ', async()=> { 
             //const value = ethers.utils.parseUnits('1000000', 'ether')
-            console.log(deployer.address)
             expect(await token.balanceOf(deployer.address)).to.equal(totalSupply)
     
+        })
+    })
+
+    describe('Sending Token',() => {
+        let amount 
+
+        beforeEach(async()=>{
+            amount = tokens(100)
+            let transaction = await token.connect(deployer).transfer(receiver.address, amount)
+            let result = transaction.wait() 
+        })
+
+        it('Transfers token balances', async()=>{          
+            expect(await token.balanceOf(deployer.address)).to.equal(tokens(999900))
+            expect(await token.balanceOf(receiver.address)).to.equal(amount)    
         })
     })
 })

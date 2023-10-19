@@ -82,8 +82,8 @@ contract Token {
      returns(bool success)
     {
         //check approval
-        require(_value <= allowance[_from][msg.sender]);
-        require(_value <= balanceOf[_from]);
+        require(_value <= allowance[_from][msg.sender],  'insufficiant allowance');
+        require(_value <= balanceOf[_from], 'insufficient balance');
 
         
 

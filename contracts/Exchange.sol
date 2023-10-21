@@ -7,7 +7,11 @@ import "./Token.sol";
 contract Exchange {
     address public feeAccount;
     uint256 public feePercent;
+    uint256 public orderCount;// initially 0
+
     mapping(address => mapping(address => uint256)) public tokens;
+
+    mapping(uint256 => _Order) public orders;
 
     event Deposit(
     address indexed token,
@@ -22,6 +26,27 @@ contract Exchange {
     uint256 amount,
     uint256 balance
     );
+
+    event Order(
+        uint256 id,
+        address user,
+        address tokenGet,
+        uint256 amountGet,
+        address tokenGive,
+        uint256 amountGive,
+        uint256 timestamp
+    );
+
+    struct _Order {
+        // Attributes of an order
+        uint256 id; // Unique identifier for order
+        address user; // User who made order
+        address tokenGet; // Address of the token they receive
+        uint256 amountGet; // Amount they receive
+        address tokenGive; // Address of token they give
+        uint256 amountGive; // Amount they give
+        uint256 timestamp; // When order was created
+    }
 
     constructor(address _feeAccount, uint256 _feePercent){
         feeAccount = _feeAccount;
@@ -64,4 +89,29 @@ contract Exchange {
     }
 
 
+    function makeOrder(address tokenGet, uint256 amountGet, address tokenGive, uint256 amountGive) public
+    {
+
+        require(balanceOf(msg.sender, tokenGive) >= amountGive);
+        orderCount = orderCount + 1;
+        orders[orderCount] = _Order(
+            orderCount,
+            msg.sender,
+            tokenGet,
+            amountGet,
+            tokenGive,
+            amountGive,
+            block.timestamp
+        );
+
+        emit Order(
+            orderCount,
+            msg.sender,
+            tokenGet,
+            amountGet,
+            tokenGive,
+            amountGive,
+            block.timestamp
+        );
+    }
 }

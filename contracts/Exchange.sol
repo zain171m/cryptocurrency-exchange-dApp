@@ -13,6 +13,8 @@ contract Exchange {
 
     mapping(uint256 => _Order) public orders;
 
+    mapping(uint256 => bool) public canceledOrder; //default false
+
     event Deposit(
     address indexed token,
     address indexed user, 
@@ -28,6 +30,16 @@ contract Exchange {
     );
 
     event Order(
+        uint256 id,
+        address user,
+        address tokenGet,
+        uint256 amountGet,
+        address tokenGive,
+        uint256 amountGive,
+        uint256 timestamp
+    );
+
+    event Cancel(
         uint256 id,
         address user,
         address tokenGet,
@@ -114,4 +126,27 @@ contract Exchange {
             block.timestamp
         );
     }
+
+    function cancelOrder(uint _id) public
+    {
+        //fetch the order
+        _Order storage _order = orders[_id];
+        //confirm the user
+        require(_order.user == msg.sender);
+        //confirm the order exist
+        require(_order.id == _id);
+        //cancel the order
+        canceledOrder[_id] = true;
+        //emit the event
+        emit Cancel(
+            _order.id,
+            msg.sender,
+            _order.tokenGet,
+            _order.amountGet,
+            _order.tokenGive,
+            _order.amountGive,
+            block.timestamp
+        );
+    }
+
 }

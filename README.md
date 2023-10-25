@@ -1,4 +1,4 @@
-## Cryptocurrency Exchange Decentralized App
+# Cryptocurrency Exchange Decentralized App
 
 ### Project Description
 
@@ -43,8 +43,8 @@ This ERC20 Token Exchange dapp is a secure, decentralized, and transparent way t
     * The dapp charges a small fee for each trade. The fee is used to compensate the dapp's developers and to maintain the dapp's infrastructure.
 * **Support:**
     * If you have any questions or problems using the dapp, please visit the dapp's website or contact the dapp's developers.
-# Here's how you can test this project after you have metamask wallet and cloned into the repository
-# Getting Started with Create React App
+## Here's how you can test this project after you have metamask wallet and cloned into the repository
+## Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

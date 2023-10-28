@@ -131,7 +131,6 @@ describe('Exchange', () => {
                 result = await transaction.wait()
             })
             it('Tracks the token balances', async() => {
-                console.log(await exchange.balanceOf(user1.address, token1.address))
                 expect(await exchange.balanceOf(user1.address, token1.address)).to.equal(amount)
             })
     })

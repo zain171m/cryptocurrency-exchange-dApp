@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { loadProvider, loadNetwork, 
   loadAccount, loadTokens, loadExchange } from '../store/interactions';
 
-
+import Navbar from './Navbar'
                 
 
 function App() {
@@ -15,11 +15,21 @@ function App() {
 
     //making connection to the blockchain provider
     const provider = loadProvider(dispatch)
+
     //Accessing the chianId of current network connected
     const chainId = await loadNetwork(provider,dispatch)
 
+    //Reload page when network changes
+    window.ethereum.on('chainChanged', () => {
+      window.location.reload()
+    })
+
+
     //Fetch current account and balace from Metamask
-    await loadAccount(provider, dispatch)
+    window.ethereum.on('accountsChanged', async()=>{
+      await loadAccount(provider, dispatch)
+    })
+    //await loadAccount(provider, dispatch)
 
     //Accessing the Token smart Contract so that we can use it in js file
     const DApp = config[chainId].DApp
@@ -38,7 +48,7 @@ function App() {
   return (
     <div>
 
-      {/* Navbar */}
+      <Navbar/>
 
       <main className='exchange grid'>
         <section className='exchange__section--left grid'>

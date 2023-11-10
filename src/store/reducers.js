@@ -42,6 +42,12 @@ const DEFAULT_TOKENS_STATE = {
           contracts: [action.token],
           symbols: [action.symbol]
         }
+        case 'TOKEN_1_BALANCE_LOADED':
+        return {
+          ...state,
+          loaded: true,
+          balance: [action.balance]
+        }
       case 'TOKEN_2_LOADED':
         return {
           ...state,
@@ -49,20 +55,68 @@ const DEFAULT_TOKENS_STATE = {
           contracts: [...state.contracts, action.token],
           symbols: [...state.symbols, action.symbol]
         }
+      case 'TOKEN_2_BALANCE_LOADED':
+        return {
+          ...state,
+          loaded: true,
+          balance: [...state.balance, action.balance]
+        }
   
         default:
           return state
     }
   }
 
+  const DEFAULT_EXCHANGE_STATE = {
+    loaded: false,
+    contract: {}, 
+    transaction:{
+      isSuccessfull: false
+    },
+    events: []
+  }
 
-  export const exchange = (state = {loaded: false, contract: {}}, action) => {
+  export const exchange = (state = DEFAULT_EXCHANGE_STATE, action) => {
     switch (action.type) {
       case 'EXCHANGE_LOADED':
         return {
           ...state,
           loaded: true,
           contracts: action.exchange,
+        }
+
+      case 'EXCHANGE_TOKEN_1_BALANCE_LOADED':
+        return {
+          ...state,
+          balance: [action.balance]
+        }
+      
+      case 'EXCHANGE_TOKEN_2_BALANCE_LOADED':
+        return {
+          ...state,
+          balance: [...state.balance, action.balance]
+        }
+
+      case 'TRANSFER_REQUEST':
+        return {
+          ...state,
+          transaction: {
+            transactionType : 'Transfer',
+            isPending: true,
+            isSuccessfull: false,
+          },
+          transferInProgress: true
+        }
+      case 'TRANSFER_SUCCESS':
+        return {
+          ...state,
+          transaction: {
+            transactionType : 'Transfer',
+            isPending: false,
+            isSuccessfull: false,
+          },
+          transferInProgress: false,
+          events: [...state.events , action.event]
         }
 
         default:

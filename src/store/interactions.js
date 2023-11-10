@@ -2,6 +2,7 @@ import { ethers } from 'ethers'
 import Token_Abi from '../abis/Token.json';
 import Exchange_Abi from '../abis/Exchange.json';
 
+
 export const loadProvider = (dispatch) => {
     const connection = new ethers.providers.Web3Provider( window.ethereum )
     dispatch({ type: 'PROVIDER_LOADED', connection })
@@ -48,4 +49,55 @@ export const loadExchange = async (provider, address, dispatch) => {
     dispatch({type: 'EXCHANGE_LOADED', exchange})
 
     return exchange
+}
+
+
+export const subscribeToEvents = (exchange, dispatch) => {
+    exchange.on('Deposit', (token, user, amount, balance, event) => {
+        dispatch({type: 'TRANSFER_SUCCESS', event})
+    })
+}
+
+//...........................................
+// .....Load Token and exchange balances.....
+
+export const loadBalances = async (exchange, tokens, account, dispatch) => {
+    
+    let balance = ethers.utils.formatUnits(await tokens[0].balanceOf(account), 18)
+    dispatch({ type: 'TOKEN_1_BALANCE_LOADED', balance })
+    
+
+    balance = ethers.utils.formatUnits(await exchange.balanceOf(account, tokens[0].address), 18)
+    dispatch({ type: 'EXCHANGE_TOKEN_1_BALANCE_LOADED', balance })
+    
+
+    balance = ethers.utils.formatUnits(await tokens[1].balanceOf(account), 18)
+    dispatch({ type: 'TOKEN_2_BALANCE_LOADED', balance })
+    
+    balance = ethers.utils.formatUnits(await exchange.balanceOf(account, tokens[1].address), 18)
+    dispatch({ type: 'EXCHANGE_TOKEN_2_BALANCE_LOADED', balance })
+    
+}
+
+export const transferTokens = async(provider, exchange, transferType, token, amount, dispatch) => {
+    let transaction
+
+    dispatch({ type: 'TRANSFER_REQUEST' })
+
+    try {
+        const signer = await provider.getSigner()
+        const amountToTransfer = ethers.utils.parseUnits(amount.toString(), 18)
+        //Approve Token
+        transaction = await token.connect(signer).approve(exchange.address, amountToTransfer)
+        await transaction.wait()
+        //Deposit Token
+        transaction = await exchange.connect(signer).depositToken(token.address, amountToTransfer)
+        await transaction.wait()
+        
+    } catch (error) {
+        console.error(error)
+    }
+    
+    
+
 }

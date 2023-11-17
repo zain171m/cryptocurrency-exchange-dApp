@@ -73,10 +73,15 @@ const DEFAULT_TOKENS_STATE = {
     transaction:{
       isSuccessfull: false
     },
+    allOrders:{
+      loaded: false,
+      data: []
+    },
     events: []
   }
 
   export const exchange = (state = DEFAULT_EXCHANGE_STATE, action) => {
+    let data, index
     switch (action.type) {
       case 'EXCHANGE_LOADED':
         return {
@@ -103,7 +108,7 @@ const DEFAULT_TOKENS_STATE = {
           transaction: {
             transactionType : 'Transfer',
             isPending: true,
-            isSuccessfull: false,
+            isSuccessful: false,
           },
           transferInProgress: true
         }
@@ -113,11 +118,58 @@ const DEFAULT_TOKENS_STATE = {
           transaction: {
             transactionType : 'Transfer',
             isPending: false,
-            isSuccessfull: false,
+            isSuccessful: true,
           },
           transferInProgress: false,
           events: [...state.events , action.event]
         }
+
+      case 'NEW_ORDER_REQUEST':
+        return {
+          ...state,
+          transaction: {
+            transactionType : 'New Order',
+            isPending: true,
+            isSuccessful: false,
+          },
+        }
+
+      
+
+      case 'NEW_ORDER_SUCCESS':
+        index = state.allOrders.data.findIndex(order => order.id === action.order.id)
+
+        if (index === -1)
+        {
+          data = [...state.allOrders.data, action.order]
+        }else{
+          data = state.allOrders.data
+        }
+        return {
+          ...state,
+          allOrders:{
+            ...state.allOrders,
+            data
+          },
+          transaction: {
+            transactionType : 'New Order',
+            isPending: false,
+            isSuccessful: true,
+          },
+          events: [...state.allOrders.data, action.order]
+        }
+
+      case 'NEW_ORDER_FAIL':
+        return {
+          ...state,
+          transaction: {
+            transactionType : 'New Order',
+            isPending: false,
+            isSuccessful: false,
+            isError: true,
+          },
+        }
+
 
         default:
           return state

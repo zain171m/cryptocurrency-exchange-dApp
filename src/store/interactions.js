@@ -56,12 +56,12 @@ export const subscribeToEvents = (exchange, dispatch) => {
     exchange.on('Deposit', (token, user, amount, balance, event) => {
         dispatch({type: 'TRANSFER_SUCCESS', event})
     })
-    exchange.on('Withdraw', (token, user, amount, balance, event) => {
+    exchange.on('Withdraw', (token, user, amount, balance, event) => {  
         dispatch({type: 'TRANSFER_SUCCESS', event})
     })
 
     exchange.on('Order', (id, user, tokenGet, amountGet, tokenGive, amountGive, timestamp, event) => {
-        const order = event.args
+        const order = event.args 
         dispatch({ type: 'NEW_ORDER_SUCCESS', order, event })
       })
 }
@@ -86,6 +86,38 @@ export const loadBalances = async (exchange, tokens, account, dispatch) => {
     dispatch({ type: 'EXCHANGE_TOKEN_2_BALANCE_LOADED', balance })
     
 }
+
+
+//===================================================================================
+// ................................Load all Orders...................................
+
+export const loadAllOrders = async(provider, exchange, dispatch) => {
+
+    const block = await provider.getBlockNumber()
+
+    const orderStream = await exchange.queryFilter('Order', 0, block)
+    const allOrders = orderStream.map(event => event.args)
+
+    dispatch({type : 'ALL_ORDERS_LOADED', allOrders})
+
+
+    const cancelledOrderStream = await exchange.queryFilter('Cancel', 0, block)
+    const allCancelledOrders = cancelledOrderStream.map(event => event.args)
+
+    dispatch({type : 'ALL_CANCELLED_ORDERS_LOADED', allCancelledOrders})
+
+
+    const filledOrderStream = await exchange.queryFilter('Trade', 0, block)
+    const allFilledOrders = filledOrderStream.map(event => event.args)
+
+    dispatch({type : 'ALL_FILLED_ORDERS_LOADED', allFilledOrders})
+
+
+
+
+
+}
+
 
 export const transferTokens = async(provider, exchange, transferType, token, amount, dispatch) => {
     let transaction
@@ -156,7 +188,5 @@ export const makeSellOrder = async (provider, exchange, tokens, order, dispatch)
         
     } catch (error) {
         dispatch({ type: 'NEW_ORDER_FAIL' })
-    }
-
-    //dispatch({type: 'NEW_ORDER_SUCCESS'})    
+    }   
 }

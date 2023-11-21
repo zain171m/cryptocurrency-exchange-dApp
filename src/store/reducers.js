@@ -69,19 +69,23 @@ const DEFAULT_TOKENS_STATE = {
 
   const DEFAULT_EXCHANGE_STATE = {
     loaded: false,
-    contract: {}, 
-    transaction:{
-      isSuccessfull: false
+    contract: {},
+    transaction: {
+      isSuccessful: false
     },
-    allOrders:{
+    allOrders: {
       loaded: false,
       data: []
     },
     events: []
   }
+  
 
   export const exchange = (state = DEFAULT_EXCHANGE_STATE, action) => {
     let data, index
+
+
+
     switch (action.type) {
       case 'EXCHANGE_LOADED':
         return {
@@ -89,6 +93,35 @@ const DEFAULT_TOKENS_STATE = {
           loaded: true,
           contracts: action.exchange,
         }
+        //---------------------------------------------------------------------------------------------------------
+        //-----------------------------All Orders Loaded(cancelled, Filled & All)----------------------------------
+        case 'ALL_ORDERS_LOADED':
+        return {
+          ...state,
+          allOrders: {
+            loaded: true,
+            data: action.allOrders
+          }
+        }
+
+        case 'ALL_CANCELLED_ORDERS_LOADED':
+        return {
+          ...state,
+          allCancelledOrders: {
+            loaded: true,
+            data: action.allCancelledOrders
+          }
+        }
+
+        case 'ALL_FILLED_ORDERS_LOADED':
+        return {
+          ...state,
+          allFilledOrders: {
+            loaded: true,
+            data: action.allFilledOrders
+          }
+        }
+
 
       case 'EXCHANGE_TOKEN_1_BALANCE_LOADED':
         return {
@@ -123,54 +156,63 @@ const DEFAULT_TOKENS_STATE = {
           transferInProgress: false,
           events: [...state.events , action.event]
         }
+        case 'TRANSFER_FAIL':
+          return {
+            ...state,
+            transaction: {
+              transactionType : 'Transfer',
+              isPending: false,
+              isSuccessful: false,
+              isError:true
+            },
+            transferInProgress: false,
+          }
 
-      case 'NEW_ORDER_REQUEST':
-        return {
-          ...state,
-          transaction: {
-            transactionType : 'New Order',
-            isPending: true,
-            isSuccessful: false,
-          },
-        }
 
+          case 'NEW_ORDER_REQUEST':
+            return {
+              ...state,
+              transaction: {
+                transactionType: 'New Order',
+                isPending: true,
+                isSuccessful: false
+              },
+            }
       
-
-      case 'NEW_ORDER_SUCCESS':
-        index = state.allOrders.data.findIndex(order => order.id === action.order.id)
-
-        if (index === -1)
-        {
-          data = [...state.allOrders.data, action.order]
-        }else{
-          data = state.allOrders.data
-        }
-        return {
-          ...state,
-          allOrders:{
-            ...state.allOrders,
-            data
-          },
-          transaction: {
-            transactionType : 'New Order',
-            isPending: false,
-            isSuccessful: true,
-          },
-          events: [...state.allOrders.data, action.order]
-        }
-
-      case 'NEW_ORDER_FAIL':
-        return {
-          ...state,
-          transaction: {
-            transactionType : 'New Order',
-            isPending: false,
-            isSuccessful: false,
-            isError: true,
-          },
-        }
-
-
+          case 'NEW_ORDER_SUCCESS':
+            // Prevent duplicate orders
+            index = state.allOrders.data.findIndex(order => order.id.toString() === action.order.id.toString())
+      
+            if(index === -1) {
+              data = [...state.allOrders.data, action.order]
+            } else {
+              data = state.allOrders.data
+            }
+      
+            return {
+              ...state,
+              allOrders: {
+                ...state.allOrders,
+                data
+              },
+              transaction: {
+                transactionType: 'New Order',
+                isPending: false,
+                isSuccessful: true
+              },
+              events: [action.event, ...state.events]
+            }
+      
+          case 'NEW_ORDER_FAIL':
+            return {
+              ...state,
+              transaction: {
+                transactionType: 'New Order',
+                isPending: false,
+                isSuccessful: false,
+                isError: true
+              },
+            }
         default:
           return state
     }

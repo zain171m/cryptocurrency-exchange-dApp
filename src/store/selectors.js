@@ -11,6 +11,7 @@ const allOrders = state => get(state, 'exchange.allOrders.data', [])
 const filledOrders = state => get(state, 'exchange.allFilledOrders.data', [])
 const cancelledOrders = state => get(state, 'exchange.allCancelledOrders.data', [])
 
+
 const openOrders = state => {
     const all = allOrders(state)
     const filled = filledOrders(state)

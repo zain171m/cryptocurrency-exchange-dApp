@@ -6,6 +6,7 @@ import moment from "moment";
 const GREEN = '#25CE8F'
 const RED = '#F45353'
 
+
 const tokens = state => get(state, 'tokens.contracts')
 const allOrders = state => get(state, 'exchange.allOrders.data', [])
 const filledOrders = state => get(state, 'exchange.allFilledOrders.data', [])

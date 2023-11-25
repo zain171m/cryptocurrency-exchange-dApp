@@ -11,7 +11,6 @@ const PriceChart = () => {
     const account  = useSelector(state => state.provider.account)
     const symbols = useSelector(state => state.tokens.symbols)
     const priceChart = useSelector(priceChartSelector)
-    console.log(priceChart)
 
     return (
       <div className="component exchange__chart">

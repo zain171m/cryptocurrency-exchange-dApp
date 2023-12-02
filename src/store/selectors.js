@@ -57,8 +57,68 @@ const decorateOrder = (order, tokens) => {
     })
 }
 
-// ----------------------------------------------------------------------
-// ---------------------------FILLED ORDERS------------------------------
+
+// -----------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------My FILLED ORDERS-------------------------------------------------
+
+
+export const myFilledOrdersSelector = createSelector(filledOrders, account, tokens, (orders,account,tokens) => {
+
+    if(!tokens[0] || !tokens[1]) { return }
+    //Filters orders by the user owned orders
+    orders = orders.filter((o) => o.user === account || o.creator === account)
+
+    //Filters orders by selected market
+    orders = orders.filter((o) => o.tokenGet === tokens[0].address || o.tokenGet === tokens[1].address)
+    orders = orders.filter((o) => o.tokenGive === tokens[0].address || o.tokenGive === tokens[1].address)
+
+    // sort orders in ascending orders.. [X]
+    // decorate orders, add color class.. [X]
+    // sort orders in descending order..
+
+    orders = orders.sort((a, b) => a.timestamp - b.timestamp)
+
+    orders = decorateMyFilledOrders(orders,account, tokens)
+    
+    orders = orders.sort((a, b) => b.timestamp - a.timestamp)
+
+    console.log(orders)
+    return orders
+
+})
+
+
+const decorateMyFilledOrders = (orders,account, tokens)=>{
+    return (orders.map((order)=>{
+        //decorate each order
+        order = decorateOrder(order, tokens)
+        order = decorateMyFilledOrder(order, account,tokens)
+        return order
+    }))    
+}
+
+
+const decorateMyFilledOrder = (order ,account, tokens)=>{
+    const myOrder = order.creator === account
+
+    let orderType
+    if (myOrder){
+        orderType = order.tokenGive === tokens[0].addess ? 'sell': 'buy'
+    }else{
+        orderType = order.tokenGive === tokens[0].addess ? 'buy': 'sell'
+    }
+
+    return({
+        ...order,
+        orderType,
+        orderClass: (orderType === 'buy' ? GREEN : RED),
+        orderSign: (orderType === 'buy' ? '+' : '-')
+    })
+}
+
+
+// -----------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------FILLED ORDERS----------------------------------------------------
 
 
 export const filledOrdersSelector = createSelector(filledOrders, tokens, (orders, tokens) => {
@@ -116,8 +176,8 @@ const tokenPriceClass = (tokenPrice, orderId, previousOrder)=>{
     }
 }
 
-// -----------------------------------------------------------------------
-// ---------------------------MY OPEN ORDERS------------------------------
+// -----------------------------------------------------------------------------------------------------------
+// ---------------------------------------------MY OPEN ORDERS------------------------------------------------
 
 export const myOrderSelector = createSelector(openOrders, account, tokens, (orders,account, tokens) => {
     if(!tokens[0] || !tokens[1]) { return }
@@ -154,8 +214,8 @@ const decorateMyOrder = (order, tokens) => {
 
 
 
-// ------------------------------------------------------------------
-// --------------------------ORDER BOOK------------------------------
+// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------ORDER BOOK--------------------------------------------------
 
 export const orderBookSelector = createSelector(openOrders, tokens, (orders, tokens) => {
 
@@ -252,8 +312,8 @@ const buildGraphData = (orders)=>{
 
 */
 
-// ------------------------------------------------------------------------------
-// PRICE CHART
+// ----------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------PRICE CHART---------------------------------------------
 
 export const priceChartSelector = createSelector(
     filledOrders,

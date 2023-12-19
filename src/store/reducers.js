@@ -77,6 +77,13 @@ const DEFAULT_TOKENS_STATE = {
       loaded: false,
       data: []
     },
+    allCancelledOrders: {
+      data: []
+    },
+    allFilledOrders: {
+      loaded: false,
+      data: []
+    },
     events: []
   }
   
@@ -156,7 +163,54 @@ const DEFAULT_TOKENS_STATE = {
         return {
           ...state,
           transaction: {
-            transactionType: 'Cancel',
+            transactionType: 'Fill',
+            isPending: false,
+            isSuccessful: false,
+            isError: true
+          }
+        }
+      
+      // ------------------------------------------------------------------------------
+      // FILLING ORDERS
+      case 'ORDER_FILL_REQUEST':
+        return {
+          ...state,
+          transaction: {
+            transactionType: "Fill Order",
+            isPending: true,
+            isSuccessful: false
+          }
+        }
+
+      case 'ORDER_FILL_SUCCESS':
+        // Prevent duplicate orders
+        index = state.allFilledOrders.data.findIndex(order => order.id.toString() === action.order.id.toString())
+      
+        if(index === -1) {
+          data = [...state.allFilledOrders.data, action.order]
+        } else {
+          data = state.allFilledOrders.data
+        }
+
+        return {
+          ...state,
+          transaction: {
+            transactionType: "Fill Order",
+            isPending: false,
+            isSuccessful: true
+          },
+          allFilledOrders: {
+            ...state.allFilledOrders,
+            data
+          },
+          events: [action.event, ...state.events]
+        }
+
+      case 'ORDER_FILL_FAIL':
+        return {
+          ...state,
+          transaction: {
+            transactionType: "Fill Order",
             isPending: false,
             isSuccessful: false,
             isError: true

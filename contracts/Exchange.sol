@@ -163,68 +163,7 @@ contract Exchange {
             block.timestamp
         );
     }
-/*
-    function fillOrder(uint _id) public
-    {
-        //checking order exists
-        require(_id > 0 && _id <= orderCount);
-        //checking order is not already filled
-        require(!filledOrder[_id]);
-        //checking order is not cancelled
-        require(!canceledOrder[_id]);
 
-        //fetching order
-        _Order storage _order = orders[_id];
-        
-        //Executing the trade
-        _trade(
-            _order.id,
-            _order.user,
-            _order.tokenGet,
-            _order.amountGet,
-            _order.tokenGive,
-            _order.amountGive
-        );
-
-        //mark order as filled
-        filledOrder[_id] = true;
-
-    }
-
-    function _trade(
-        uint256 _orderId,
-        address _user,
-        address _tokenGet,
-        uint256 _amountGet,
-        address _tokenGive,
-        uint256 _amountGive
-    ) internal 
-    {
-        //figure out the the fee amount
-        uint256 feeAmount = (_amountGet * feePercent)/100;
-        //deduct the fee and amountGet from the order filler account
-        tokens[_tokenGet][msg.sender] = tokens[_tokenGet][msg.sender] - (feeAmount + _amountGet);
-        //add fee to the fee account(developer account)
-        tokens[_tokenGet][feeAccount] = tokens[_tokenGet][feeAccount] + feeAmount;
-        //deduct the tokens from the order maker account
-        tokens[_tokenGive][_user] = tokens[_tokenGive][_user] - _amountGive;
-        //add tokens to order filler acount (tokens deducted by order creater)
-        tokens[_tokenGive][msg.sender] = tokens[_tokenGive][msg.sender] + _amountGive;
-        //add tokens to order maker account (tokens deducted by order filler)
-        tokens[_tokenGet][_user] = tokens[_tokenGet][_user] + _amountGet;
-
-        //emit the fillorder event
-        emit Trade(
-        _orderId,
-        msg.sender,
-        _tokenGet,
-        _amountGet,
-        _tokenGive,
-        _amountGive,
-        block.timestamp,
-        _user
-    );
-} */
 
 function fillOrder(uint256 _id) public {
         // 1. Must be valid orderId

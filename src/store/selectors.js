@@ -82,7 +82,6 @@ export const myFilledOrdersSelector = createSelector(filledOrders, account, toke
     
     orders = orders.sort((a, b) => b.timestamp - a.timestamp)
 
-    console.log(orders)
     return orders
 
 })

@@ -154,7 +154,7 @@ export const transferTokens = async(provider, exchange, transferType, token, amo
         await transaction.wait()
         
     } catch (error) {
-        console.error(error)
+        dispatch({ type: 'TRANSFER_FAIL' })
     }
     
 }

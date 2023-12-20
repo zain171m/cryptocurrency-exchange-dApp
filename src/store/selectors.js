@@ -12,6 +12,7 @@ const allOrders = state => get(state, 'exchange.allOrders.data', [])
 const filledOrders = state => get(state, 'exchange.allFilledOrders.data', [])
 const cancelledOrders = state => get(state, 'exchange.allCancelledOrders.data', [])
 const account  = state => get(state, 'provider.account')
+const events = state => get(state, 'exchange.events')
 
 
 const openOrders = state => {
@@ -56,6 +57,20 @@ const decorateOrder = (order, tokens) => {
         formattedTimestamp: moment.unix(order.timestamp).format('h:mm:ssa d MMM D')
     })
 }
+
+
+// ---------------------------------------------------------------------------------------
+// ---------------------------------------MY EVENTS---------------------------------------
+
+export const myEventsSelector = createSelector(
+    account,
+    events,
+    (account, events) => {
+      events = events.filter((e) => e.args.user === account)
+      return events
+    }
+  )
+  
 
 
 // -----------------------------------------------------------------------------------------------------------------

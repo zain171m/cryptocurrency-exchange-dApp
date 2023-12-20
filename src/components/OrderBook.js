@@ -12,7 +12,6 @@ const OrderBook = () => {
     const dispatch = useDispatch()
 
     const fillOrderHandler = (order) => {
-      console.log("clicked")
       fillOrder(provider, exchange, order, dispatch)
     }
 

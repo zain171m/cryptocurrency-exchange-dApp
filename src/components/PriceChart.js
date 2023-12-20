@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import Banner from "./Banner"
 import Chart from 'react-apexcharts'
-import {options, defaultSeries, series} from './PriceChart.config'
+import {options, defaultSeries} from './PriceChart.config'
 import { priceChartSelector } from "../store/selectors";
 import arrowUp from '../assets/up-arrow.svg'
 import arrowDown from '../assets/down-arrow.svg'

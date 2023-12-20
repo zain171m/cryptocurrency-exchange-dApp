@@ -16,9 +16,9 @@ async function main() {
 
 
   //deploy tokens
-  const Dapp = await Token.deploy("Dapp", "Dapp" , '1000000')
-  await Dapp.deployed()
-  console.log(`Dapp deployed to: ${Dapp.address}`)
+  const Punjab = await Token.deploy("Punjab", "Punjab" , '1000000')
+  await Punjab.deployed()
+  console.log(`Punjab deployed to: ${Punjab.address}`)
 
   const mEth = await Token.deploy("mEth", "mEth" , '1000000')
   await mEth.deployed()

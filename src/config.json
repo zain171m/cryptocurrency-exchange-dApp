@@ -11,9 +11,22 @@
       },
       "mDAI": {
         "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
-      }
+      },
+      "explorerURL" : "#"
     },
     "11155111":{
-      "explorerURL" : "https://goerli.etherscan.io/"
+      "exchange": {
+        "address": "0x5FcA5F6531080E749010E556575dA6aB55002c24"
+      },
+      "Punjab": {
+        "address": "0x5F47D87f577D12227864dE176Ce0D2fafA74956B"
+      },
+      "mETH": {
+        "address": "0x8196dD29C5689B68DBa2fcCB604B4eC7EA8bb803"
+      },
+      "mDAI": {
+        "address": "0xA369B93D7065B84300f2718F0b27F993F9E7899b"
+      },
+      "explorerURL" : "https://sepolia.etherscan.io/"
     }
   }

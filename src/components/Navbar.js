@@ -21,9 +21,12 @@ const Navbar = () => {
   }
 
   const networkHandler = async (e) => {
+    //`0x${chainId.toString(16)}
+    let value = e.target.value
+    value = `0x${(+value).toString(16)}`
     await window.ethereum.request({
       method: 'wallet_switchEthereumChain',
-      params: [{ chainId: e.target.value }],
+      params: [{ chainId: value }],
     })
   }
 
@@ -38,10 +41,10 @@ const Navbar = () => {
         <img src={eth} alt="ETH Logo" className='Eth Logo' />
 
         {chainId && (
-          <select name="networks" id="networks" value={config[chainId] ? `0x${chainId.toString(16)}` : `0`} onChange={networkHandler}>
+          <select name="networks" id="networks" value={config[chainId] ? chainId : `0`} onChange={networkHandler}>
             <option value="0" disabled>Select Network</option>
-            <option value="0x7A69">Localhost</option>
-            <option value="0xAA36A7">Sepolia</option>
+            <option value="31337">Localhost</option>
+            <option value="11155111">Sepolia</option>
           </select>
         )}
 

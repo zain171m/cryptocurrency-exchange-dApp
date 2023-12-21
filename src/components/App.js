@@ -32,6 +32,7 @@ function App() {
     // Fetch current network's chainId (e.g. hardhat: 31337, kovan: 42)
     const chainId = await loadNetwork(provider, dispatch)
 
+
     // Reload page when network changes
     window.ethereum.on('chainChanged', () => {
       window.location.reload()
@@ -42,10 +43,14 @@ function App() {
       loadAccount(provider, dispatch)
     })
 
-    // Load token smart contracts
+    if (config[chainId])
+    { 
+      // Load token smart contracts
     const Punjab = config[chainId].Punjab
     const mETH = config[chainId].mETH
     await loadTokens(provider, [Punjab.address, mETH.address], dispatch)
+    
+    
 
     // Load exchange smart contract
     const exchangeConfig = config[chainId].exchange
@@ -55,6 +60,7 @@ function App() {
 
      //Load Orders
      loadAllOrders(provider, exchange, dispatch)
+    }
   }
 
   useEffect(() => {

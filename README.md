@@ -3,6 +3,8 @@
 ### Project live link
 https://magenta-pika-5cbc5a.netlify.app/
 
+![Alt text](image.png)
+
 ### Project Description
 
 This decentralized application (dapp) allows users to trade ERC20 tokens. It is built on the Ethereum blockchain and uses smart contracts to facilitate trades.
